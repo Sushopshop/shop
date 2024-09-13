@@ -513,7 +513,7 @@
         // ฟังก์ชันสำหรับแสดงสินค้าด้วย HTML
         function createProductHtml(product) {
             let sizeOptions = ''; // ค่าเริ่มต้นเป็น "เลือกไซต์"
-            const sizeKeys = ['available'];
+            const sizeKeys = ['ทั่วไป'];
 
             sizeKeys.forEach(size => {
                 if (product[size] > 0) {
@@ -522,7 +522,7 @@
             });
 
             if (!sizeOptions) {
-                console.error("No sizes available for product:", product); // หากไม่มีขนาดที่พร้อมใช้งาน
+                console.error("No sizes ทั่วไป for product:", product); // หากไม่มีขนาดที่พร้อมใช้งาน
                 return ''; // หากไม่มีขนาดที่พร้อมใช้งาน ให้คืนค่าที่ว่างเปล่า
             }
 
