@@ -1,3 +1,4 @@
+	
 <!DOCTYPE html>
 <html lang="en">
 
@@ -52,7 +53,7 @@
         }
     </style>
 </head>
-<body class="bg-yellow-50" style="font-family: Noto Sans Thai;">
+<body class="bg-yellow-50">
     <!-- ฟังก์ชันการแสดงรายการสินค้า -->
     <div id="product-selection" class="max-w-md mx-auto pt-20">
         <div class=" p-4 rounded-lg">
@@ -220,11 +221,9 @@
 
     <script>
 		
-        // ฟังก์ชันตั้งค่า
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz1xQnuhNN-NxmzSAlIspIxSY39vKMQ3Zw4ZKn455KEobI29Jif7fPqVIMgSI9QxFLh/exec";
+	const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz1xQnuhNN-NxmzSAlIspIxSY39vKMQ3Zw4ZKn455KEobI29Jif7fPqVIMgSI9QxFLh/exec";
         const WEB_MEMBER_APP_URL = 'https://script.google.com/macros/s/AKfycbxquMeArBSqk4vROrAqrwy3gEqN1HLmWp0cHhNVu9hAHmTf8_Vi-7d_mhI9E11_rOk/exec';
         const LIFF_ID = '2006323194-VbyQyzKD'; // Liff ID
-		
 		
 		 // ฟังก์ชันตั้งค่าราคาจัดส่ง
         const shippingCostProduct = {
@@ -239,7 +238,7 @@
 		
         // เริ่มการทำงานเมื่อโหลดหน้าเว็บ
         window.onload = async function () {
-            //await initializeLiff(); // เรียกใช้งาน LIFF
+             await initializeLiff(); // เรียกใช้งาน LIFF
             fetchProducts(); // ดึงข้อมูลสินค้า
         };
 
@@ -357,6 +356,12 @@
         const loadMoreContainer = document.getElementById('load-more-container');
 
         document.getElementById('search-input').addEventListener('input', searchProducts);
+	// โหลดสินค้าเพิ่มเติม
+	loadMoreBtn.addEventListener('click', () => {
+	    currentPage += 1; // เพิ่มหน้าปัจจุบันเมื่อกดปุ่มโหลดเพิ่ม
+	    const products = JSON.parse(localStorage.getItem('products')); // ดึงสินค้าจาก localStorage
+	    renderProducts(products); // แสดงสินค้าที่เพิ่มขึ้น
+	});
 
         // ฟังก์ชันค้นหาสินค้าตามชื่อ
         function searchProducts() {
@@ -365,6 +370,15 @@
             const filteredProducts = products.filter(product => product.name.toLowerCase().includes(query));
             renderProducts(filteredProducts); // เรียกใช้ฟังก์ชันแสดงสินค้าที่มีการกรอง
         }
+	 // โหลดสินค้าเพิ่มเติม
+	loadMoreBtn.addEventListener('click', () => {
+		    currentPage += 1; // เพิ่มหน้าปัจจุบันเมื่อกดปุ่มโหลดเพิ่ม
+		    const products = JSON.parse(localStorage.getItem('products')); // ดึงสินค้าจาก localStorage
+		    renderProducts(products); // แสดงสินค้าที่เพิ่มขึ้น
+		});
+
+
+	    
 
         // ฟังก์ชันสำหรับตั้งค่าราคาจัดส่งตามที่ต้องการ
         function setShippingCost(price) {
@@ -374,7 +388,7 @@
         // ฟังก์ชันดึงข้อมูลสินค้า
         async function fetchProducts() {
             const loadingText = document.createElement('div');
-            loadingText.className = 'loading-animation text-md  text-slate-700';
+            loadingText.className = 'loading-animation text-md pt-4 text-slate-700';
             productList.appendChild(loadingText);
 
             try {
@@ -499,7 +513,7 @@
         // ฟังก์ชันสำหรับแสดงสินค้าด้วย HTML
         function createProductHtml(product) {
             let sizeOptions = ''; // ค่าเริ่มต้นเป็น "เลือกไซต์"
-            const sizeKeys = ['มีสินค้า'];
+            const sizeKeys = ['available'];
 
             sizeKeys.forEach(size => {
                 if (product[size] > 0) {
