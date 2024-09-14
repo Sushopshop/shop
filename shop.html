@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>S.U.PET</title>
+    <title>IIIRN-SHOPPING ระบบร้านค้า</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
@@ -242,7 +242,6 @@
 	    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz1xQnuhNN-NxmzSAlIspIxSY39vKMQ3Zw4ZKn455KEobI29Jif7fPqVIMgSI9QxFLh/exec";
         const WEB_MEMBER_APP_URL = 'https://script.google.com/macros/s/AKfycbxquMeArBSqk4vROrAqrwy3gEqN1HLmWp0cHhNVu9hAHmTf8_Vi-7d_mhI9E11_rOk/exec';
         const LIFF_ID = '2006323194-VbyQyzKD'; // Liff ID
-
         // ตัวเลือกการจัดส่ง
         const shippingOptions = [
             {
@@ -350,8 +349,9 @@
 
         // เริ่มการทำงานเมื่อโหลดหน้าเว็บ
         window.onload = async function () {
-            await initializeLiff(); // เรียกใช้งาน LIFF
+            // await initializeLiff(); // เรียกใช้งาน LIFF
             currentTab = 'All'; // ตั้งค่า currentTab เป็น 'All' โดยค่าเริ่มต้น
+
             fetchProducts(); // ดึงข้อมูลสินค้า
         };
    
@@ -618,7 +618,7 @@ function renderTabs(products) {
             });
 
             if (!sizeOptions) {
-                console.error("No sizes ทั่วไป for product:", product); // หากไม่มีขนาดที่พร้อมใช้งาน
+                console.error("No sizes available for product:", product); // หากไม่มีขนาดที่พร้อมใช้งาน
                 return ''; // หากไม่มีขนาดที่พร้อมใช้งาน ให้คืนค่าที่ว่างเปล่า
             }
 
@@ -941,6 +941,9 @@ function resetShippingCost() {
         shippingForm.addEventListener('submit', handleShippingFormSubmit); // ส่งข้อมูลจัดส่ง
         confirmOrderBtn.addEventListener('click', async () => {
             await saveOrder(currentOrder); // บันทึกคำสั่งซื้อ
+            // ส่งข้อความแจ้งเตือนทาง LINE เมื่อบันทึกสำเร็จ
+            await sendTextMessage();
+
             cart = []; // เคลียร์ตะกร้าหลังบันทึก
             updateCartCount(); // อัปเดตจำนวนสินค้าในตะกร้า
             shippingInfo.classList.add('hidden'); // ซ่อนหน้าการจัดส่ง
@@ -952,7 +955,26 @@ function resetShippingCost() {
         closeModalBtn.addEventListener('click', () => {
             orderDetailsModal.classList.add('hidden'); // ซ่อน modal เมื่อคลิกปุ่มปิด
         });
+        async function sendTextMessage() {
+            try {
+                // ตรวจสอบว่ามีการล็อกอินใน LIFF แล้วหรือไม่
+                if (!liff.isLoggedIn()) {
+                    liff.login(); // ถ้ายังไม่ได้ล็อกอิน ให้ทำการล็อกอิน
+                    return;
+                }
 
+                // ส่งข้อความ text ผ่าน LIFF SDK
+                await liff.sendMessages([
+                    {
+                        'type': 'text',
+                        'text': `รายการสั่งซื้อสำเร็จ`
+                    }
+                ]);
+                console.log('Message sent successfully');
+            } catch (error) {
+                console.error('Error sending message:', error);
+            }
+        }
 
     </script>
     <script src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
