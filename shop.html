@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IIIRN-SHOPPING ระบบร้านค้า</title>
+    <title>S.U.PET</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
@@ -128,18 +128,16 @@
 
             <div class="pt-4">
                 <div class="flex justify-between items-center mb-4">
-                    <label for="shipping-options" class="text-sm">เลือกวิธีการจัดส่ง <span
-                            class="text-green-600 text-xs" style="float: inline-start;">ส่งฟรีเมื่อยอดซื้อครบ 500
-                            บาท</span></label>
-
-
+                    <label for="shipping-options" class="text-sm">เลือกวิธีการจัดส่ง 
+                        <span class="text-green-600 text-xs">ส่งฟรีเมื่อยอดซื้อครบ 500 บาท</span>
+                    </label>
                     <select id="shipping-options" class="bg-white border border-gray-400 rounded-lg p-2">
                         <option value="A00000">ส่งพรุ่งนี้ ส่งฟรี(ขั้นต่ำ 500฿ ไม่เกิน5กม.)</option>
                         <option value="A00001">ส่งด่วน(เรียกเก็บทางแชท)</option>
                         <option value="A00002">ส่งขนส่ง(เรียกเก็บทางแชท)</option>
-                        <option value="A00003">ส่งฟรี (สั่งซื้อครบ 500 บาท)</option>
                     </select>
                 </div>
+                
                 <div class="flex justify-between items-center mb-4">
                     <span class="text-md font-semibold">ค่าจัดส่ง</span>
                     <span id="shipping-cost" class="text-md text-gray-400">5.00 บาท</span>
@@ -299,19 +297,26 @@
             updateTotalPrice(); // อัปเดตราคารวมใหม่หลังจากเปลี่ยนการจัดส่ง
         });
 
-
         function updateTotalPrice() {
-            const productTotal = cart.reduce((total, item) => total + (item.Price * item.quantity), 0);
-            const grandTotal = productTotal + selectedShipping.Price;
+    const productTotal = cart.reduce((total, item) => total + (item.Price * item.quantity), 0);
+    const shippingDropdown = document.getElementById('shipping-options');
 
-            // อัปเดตราคาใน HTML
-            document.getElementById('total-price').textContent = `${productTotal.toFixed(2)} บาท`;
-            document.getElementById('shipping-cost').textContent = `${selectedShipping.Price.toFixed(2)} บาท`;
-            document.getElementById('grand-total').textContent = `${grandTotal.toFixed(2)} บาท`;
+    // ถ้ายอดเงินเกิน 500 บาท ให้เปลี่ยนเป็นการจัดส่งฟรี (A00003)
+    if (productTotal >= 500) {
+        selectedShipping = shippingOptions.find(option => option.id === 'A00003');
+        shippingDropdown.value = 'A00003'; // อัปเดต dropdown ให้แสดง 'ส่งฟรี'
+    } else {
+        // ถ้ายอดเงินน้อยกว่า 500 บาท ให้ใช้การจัดส่งที่เลือกไว้
+        selectedShipping = shippingOptions.find(option => option.id === shippingDropdown.value);
+    }
 
-            // เรียกฟังก์ชันตรวจสอบการส่งฟรี
-            checkForFreeShipping();
-        }
+    const grandTotal = productTotal + selectedShipping.Price;
+
+    // อัปเดตราคาใน HTML
+    document.getElementById('total-price').textContent = `${productTotal.toFixed(2)} บาท`;
+    document.getElementById('shipping-cost').textContent = `${selectedShipping.Price.toFixed(2)} บาท`;
+    document.getElementById('grand-total').textContent = `${grandTotal.toFixed(2)} บาท`;
+}
 
 
 
@@ -352,7 +357,7 @@
 
         // เริ่มการทำงานเมื่อโหลดหน้าเว็บ
         window.onload = async function () {
-            await initializeLiff(); // เรียกใช้งาน LIFF
+            // await initializeLiff(); // เรียกใช้งาน LIFF
             currentTab = 'All'; // ตั้งค่า currentTab เป็น 'All' โดยค่าเริ่มต้น
 
             fetchProducts(); // ดึงข้อมูลสินค้า
@@ -795,27 +800,44 @@
             updateCartCount(); // อัปเดตจำนวนสินค้าในตะกร้า
         }
 
-        // ฟังก์ชันอัปเดตราคารวมในตะกร้า
         function updateTotalPrice() {
-            const productTotal = cart.reduce((total, item) => total + (item.Price * item.quantity), 0);
-            const grandTotal = productTotal + selectedShipping.Price;
+    const productTotal = cart.reduce((total, item) => total + (item.Price * item.quantity), 0);
+    const shippingDropdown = document.getElementById('shipping-options');
+    const goToShippingBtn = document.getElementById('go-to-shipping'); // ปุ่มถัดไป
 
-            // อัปเดตราคาใน HTML
-            document.getElementById('total-price').textContent = `${productTotal.toFixed(2)} บาท`;
-            document.getElementById('shipping-cost').textContent = `${selectedShipping.Price.toFixed(2)} บาท`;
-            document.getElementById('grand-total').textContent = `${grandTotal.toFixed(2)} บาท`;
+    // รีเซ็ตค่าจัดส่งตามตัวเลือกใน dropdown
+    selectedShipping = shippingOptions.find(option => option.id === shippingDropdown.value);
 
-            // ตรวจสอบให้แน่ใจว่าปุ่ม 'ถัดไป' ถูกแสดงเมื่อมีสินค้าในตะกร้า
-            const goToShippingBtn = document.getElementById('go-to-shipping');
-            if (productTotal > 0) {
-                goToShippingBtn.classList.remove('hidden'); // แสดงปุ่ม
-            } else {
-                goToShippingBtn.classList.add('hidden'); // ซ่อนปุ่ม
-            }
-
-            // ตรวจสอบตัวเลือกส่งฟรี
-            toggleFreeShippingOption();
+    // ตรวจสอบเงื่อนไขการจัดส่ง
+    if (selectedShipping.id === 'A00000') {
+        // ส่งพรุ่งนี้: ฟรีถ้ายอดเงิน >= 500 บาท, ถ้ายอดน้อยกว่า 500 ค่าส่ง 50 บาท
+        if (productTotal >= 500) {
+            selectedShipping.Price = 0; // ส่งฟรี
+        } else {
+            selectedShipping.Price = 50; // ค่าจัดส่ง 50 บาท
         }
+    } else if (selectedShipping.id === 'A00001' || selectedShipping.id === 'A00002') {
+        // ส่งด่วน และ ส่งขนส่ง: ค่าจัดส่ง 0 บาท
+        selectedShipping.Price = 0;
+    }
+
+    const grandTotal = productTotal + selectedShipping.Price;
+
+    // อัปเดตราคาใน HTML
+    document.getElementById('total-price').textContent = `${productTotal.toFixed(2)} บาท`;
+    document.getElementById('shipping-cost').textContent = `${selectedShipping.Price.toFixed(2)} บาท`;
+    document.getElementById('grand-total').textContent = `${grandTotal.toFixed(2)} บาท`;
+
+    // แสดงหรือซ่อนปุ่ม 'ถัดไป' ขึ้นอยู่กับยอดรวมสินค้า
+    if (productTotal > 0) {
+        goToShippingBtn.classList.remove('hidden'); // แสดงปุ่มถ้ายอดรวมมากกว่า 0
+    } else {
+        goToShippingBtn.classList.add('hidden'); // ซ่อนปุ่มถ้ายอดรวมเป็น 0
+    }
+
+    // แสดงหรือซ่อนตัวเลือก "ส่งฟรี" ใน dropdown หากยอดรวมถึงหรือไม่ถึง 500 บาท
+    toggleFreeShippingOption(productTotal);
+}
 
 
         // ฟังก์ชันแสดงหรือซ่อนตัวเลือกการส่งฟรี
