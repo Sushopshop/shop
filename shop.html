@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>S.U. PET</title>
+    <title>IIIRN-SHOPPING ระบบร้านค้า</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
@@ -313,7 +313,7 @@
                 selectedShipping = shippingOptions.find(option => option.id === shippingDropdown.value);
             }
 
-            const grandTotal = productTotal + selectedShipping.Price;
+            const grandTotal = productTotal + (selectedShipping.Price || 0); // ใช้ 0 ถ้าค่าจัดส่งเป็น undefined หรือ 0
 
             // อัปเดตราคาใน HTML
             document.getElementById('total-price').textContent = `${productTotal.toFixed(2)} บาท`;
@@ -804,47 +804,39 @@
         }
 
         function updateTotalPrice() {
-            const productTotal = cart.reduce((total, item) => total + (item.Price * item.quantity), 0);
-            const shippingDropdown = document.getElementById('shipping-options');
-            const goToShippingBtn = document.getElementById('go-to-shipping'); // ปุ่มถัดไป
+    const productTotal = cart.reduce((total, item) => total + (item.Price * item.quantity), 0);
+    const shippingDropdown = document.getElementById('shipping-options');
+    const goToShippingBtn = document.getElementById('go-to-shipping'); // ปุ่มถัดไป
 
-            // ถ้ายอดเงินเกิน 500 บาท ให้เปลี่ยนเป็นการจัดส่งฟรี (A00003)
-            if (productTotal >= 500) {
-                selectedShipping = {
-                    id: 'A00003',
-                    name: 'ส่งฟรี(ขั้นต่ำ 500 ไม่เกิน 5 กม)',
-                    Price: 0,
-                    size: 'ฟรี',
-                    quantity: 1,
-                    'img-product': 'https://via.placeholder.com/40?text=Free'
-                };
-                shippingDropdown.value = 'A00003'; // เปลี่ยน dropdown เป็นตัวเลือกส่งฟรี
-            } else {
-                // ถ้ายอดเงินต่ำกว่า 500 บาท ให้เปลี่ยนเป็นการจัดส่ง A00001 (ส่งด่วน)
-                selectedShipping = shippingOptions.find(option => option.id === 'A00000');
-                shippingDropdown.value = 'A00000'; // เปลี่ยน dropdown เป็น A00001
+    // อัปเดตตัวเลือกการจัดส่งตามที่ผู้ใช้เลือกใน dropdown
+    selectedShipping = shippingOptions.find(option => option.id === shippingDropdown.value);
 
-                // ตรวจสอบเงื่อนไขการจัดส่งพรุ่งนี้ (A00000)
-                if (selectedShipping.id === 'A00000' && productTotal < 500) {
-                    selectedShipping.Price = 50; // ถ้ายอดเงินน้อยกว่า 500 ค่าจัดส่ง 50 บาท
-                }
-            }
+    // ถ้ายอดเงินน้อยกว่า 500 และตัวเลือกเป็น A00000 (ส่งพรุ่งนี้)
+    if (selectedShipping.id === 'A00000' && productTotal < 500) {
+        selectedShipping.Price = 50; // ถ้ายอดเงินต่ำกว่า 500 ค่าจัดส่งเป็น 50 บาท
+    } else if (productTotal >= 500 && selectedShipping.id === 'A00000') {
+        // ถ้ายอดเงินเกิน 500 และผู้ใช้เลือก "ส่งพรุ่งนี้" ให้ปรับค่าจัดส่งเป็นฟรี
+        selectedShipping.Price = 0;
+    }
 
-            const grandTotal = productTotal + selectedShipping.Price;
+    const grandTotal = productTotal + selectedShipping.Price;
 
-            // อัปเดตราคาใน HTML
-            document.getElementById('total-price').textContent = `${productTotal.toFixed(2)} บาท`;
-            document.getElementById('shipping-cost').textContent = `${selectedShipping.Price.toFixed(2)} บาท`;
-            document.getElementById('grand-total').textContent = `${grandTotal.toFixed(2)} บาท`;
+    // อัปเดตราคาใน HTML
+    document.getElementById('total-price').textContent = `${productTotal.toFixed(2)} บาท`;
+    document.getElementById('shipping-cost').textContent = `${selectedShipping.Price.toFixed(2)} บาท`;
+    document.getElementById('grand-total').textContent = `${grandTotal.toFixed(2)} บาท`;
 
-            // แสดงหรือซ่อนปุ่ม 'ถัดไป' ขึ้นอยู่กับยอดรวมสินค้า
-            if (productTotal > 0) {
-                goToShippingBtn.classList.remove('hidden'); // แสดงปุ่มถ้ายอดรวมมากกว่า 0
-            } else {
-                goToShippingBtn.classList.add('hidden'); // ซ่อนปุ่มถ้ายอดรวมเป็น 0
-            }
-        }
-
+    // แสดงหรือซ่อนปุ่ม 'ถัดไป' ขึ้นอยู่กับยอดรวมสินค้า
+    if (productTotal > 0) {
+        goToShippingBtn.classList.remove('hidden'); // แสดงปุ่มถ้ายอดรวมมากกว่า 0
+    } else {
+        goToShippingBtn.classList.add('hidden'); // ซ่อนปุ่มถ้ายอดรวมเป็น 0
+    }
+}
+// เพิ่ม event listener ให้ dropdown เพื่อให้การเลือกการจัดส่งอัปเดตได้ตามที่เลือก
+document.getElementById('shipping-options').addEventListener('change', function () {
+    updateTotalPrice(); // เรียก updateTotalPrice ทุกครั้งเมื่อผู้ใช้เปลี่ยน dropdown
+});
 
         // ฟังก์ชันแสดงหรือซ่อนตัวเลือกการส่งฟรี
         function toggleFreeShippingOption() {
@@ -881,41 +873,60 @@
 
         shippingForm.addEventListener('submit', handleShippingFormSubmit); // เมื่อส่งข้อมูลการจัดส่ง
 
-        // ฟังก์ชันจัดการการส่งข้อมูลการจัดส่ง
         function handleShippingFormSubmit(event) {
-            event.preventDefault(); // ป้องกันการส่งฟอร์มแบบเดิม
-            const username = document.getElementById('username').value;
-            const address = document.getElementById('address').value;
-            const contact = document.getElementById('contact').value;
-            const note = document.getElementById('note').value;
-            const userlineid = document.getElementById('userlineid').value;
-            const saveInfo = document.getElementById('save-info').checked;
+    event.preventDefault(); // ป้องกันการส่งฟอร์มแบบเดิม
+    const username = document.getElementById('username').value;
+    const address = document.getElementById('address').value;
+    const contact = document.getElementById('contact').value;
+    const note = document.getElementById('note').value;
+    const userlineid = document.getElementById('userlineid').value;
+    const saveInfo = document.getElementById('save-info').checked;
 
-            // ตรวจสอบและเพิ่มค่าจัดส่งก่อนบันทึกคำสั่งซื้อ
-            addShippingCost(); // เพิ่มค่าจัดส่งที่ถูกต้องลงในตะกร้า
+    // ตรวจสอบและเพิ่มค่าจัดส่งก่อนบันทึกคำสั่งซื้อ
+    addShippingCost(); // เพิ่มค่าจัดส่งที่ถูกต้องลงในตะกร้า
 
-            // คำนวณราคารวมสินค้าและค่าจัดส่ง
-            const productTotal = cart.reduce((total, item) => total + (item.Price * item.quantity), 0);
-            const grandTotal = productTotal + selectedShipping.Price; // คำนวณราคารวมทั้งหมด
+    const productTotal = cart.reduce((total, item) => total + (item.Price * item.quantity), 0);
+    const grandTotal = productTotal + (selectedShipping.Price || 0); // คำนวณราคารวมทั้งหมด, กรณี Price เป็น 0
 
-            // สร้างออเดอร์
-            const order = {
-                username,
-                address,
-                contact,
-                note,
-                userlineid,
-                items: cart, // รายการสินค้าจากตะกร้า
-                shippingType: selectedShipping.name, // ประเภทการจัดส่งที่เลือก
-                shippingCost: selectedShipping.Price, // ค่าจัดส่งที่เลือก
-                total: grandTotal, // ราคารวมสินค้า + ค่าจัดส่ง
-                saveInfo
-            };
+    // สร้างออเดอร์
+    const order = {
+        username,
+        address,
+        contact,
+        note,
+        userlineid,
+        items: cart, // รายการสินค้าจากตะกร้า
+        shippingType: selectedShipping.name, // ประเภทการจัดส่งที่เลือก
+        shippingCost: selectedShipping.Price !== undefined ? selectedShipping.Price : 0, // ค่าจัดส่ง, ใช้ 0 ถ้าไม่ได้ตั้งค่า
+        total: grandTotal, // ราคารวมสินค้า + ค่าจัดส่ง
+        saveInfo
+    };
 
-            currentOrder = order; // บันทึกข้อมูลคำสั่งซื้อปัจจุบัน
-            orderDetailsContent.innerHTML = renderOrderDetails(order); // แสดงรายละเอียดการสั่งซื้อ
-            orderDetailsModal.classList.remove('hidden'); // แสดง modal รายละเอียดการสั่งซื้อ
-        }
+    currentOrder = order; // บันทึกข้อมูลคำสั่งซื้อปัจจุบัน
+    orderDetailsContent.innerHTML = renderOrderDetails(order); // แสดงรายละเอียดการสั่งซื้อ
+    orderDetailsModal.classList.remove('hidden'); // แสดง modal รายละเอียดการสั่งซื้อ
+
+}
+
+
+// ฟังก์ชันบันทึกคำสั่งซื้อ
+async function saveOrder(order) {
+    orderStatusEl.classList.remove('hidden'); // แสดงข้อความสถานะการบันทึก
+    orderStatusEl.textContent = 'กำลังบันทึกคำสั่งซื้อของคุณ...🛒';
+
+    try {
+        const response = await fetch(WEB_APP_URL, {
+            method: 'POST',
+            body: JSON.stringify(order) // ส่งข้อมูลคำสั่งซื้อไปยัง API
+        });
+        const result = await response.text();
+        orderStatusEl.textContent = result; // แสดงข้อความผลลัพธ์การบันทึก
+        console.log(result);
+    } catch (error) {
+        console.error('Error saving order:', error);
+        orderStatusEl.textContent = 'เกิดข้อผิดพลาดในการบันทึกคำสั่งซื้อ';
+    }
+}
 
 
 
@@ -949,18 +960,6 @@
     `;
         }
 
-        // ฟังก์ชันบันทึกคำสั่งซื้อ
-        async function saveOrder(order) {
-            orderStatusEl.classList.remove('hidden'); // แสดงข้อความสถานะการบันทึก
-            orderStatusEl.textContent = 'กำลังบันทึกคำสั่งซื้อของคุณ...🛒';
-            const response = await fetch(url, {
-                method: 'POST',
-                body: JSON.stringify(order) // ส่งข้อมูลคำสั่งซื้อไปยัง API
-            });
-            const result = await response.text();
-            orderStatusEl.textContent = result; // แสดงข้อความผลลัพธ์การบันทึก
-            console.log(result);
-        }
 
         // กำหนดการทำงานให้ปุ่มต่างๆ
         goToCartBtn.addEventListener('click', showCart); // แสดงตะกร้าเมื่อคลิกที่ปุ่มตะกร้า
