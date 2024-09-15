@@ -803,36 +803,38 @@
             updateCartCount(); // อัปเดตจำนวนสินค้าในตะกร้า
         }
 
-        function updateTotalPrice() {
-    const productTotal = cart.reduce((total, item) => total + (item.Price * item.quantity), 0);
+      function updateTotalPrice() {
+    const productTotal = cart.reduce((total, item) => total + (item.Price * item.quantity), 0); // คำนวณยอดรวมสินค้า
+
     const shippingDropdown = document.getElementById('shipping-options');
     const goToShippingBtn = document.getElementById('go-to-shipping'); // ปุ่มถัดไป
 
-    // อัปเดตตัวเลือกการจัดส่งตามที่ผู้ใช้เลือกใน dropdown
+    // ค้นหาค่าจัดส่งที่เลือกไว้
     selectedShipping = shippingOptions.find(option => option.id === shippingDropdown.value);
 
-    // ถ้ายอดเงินน้อยกว่า 500 และตัวเลือกเป็น A00000 (ส่งพรุ่งนี้)
+    // ถ้ายอดรวมสินค้าน้อยกว่า 500 และเป็นการส่งพรุ่งนี้ (A00000)
     if (selectedShipping.id === 'A00000' && productTotal < 500) {
-        selectedShipping.Price = 50; // ถ้ายอดเงินต่ำกว่า 500 ค่าจัดส่งเป็น 50 บาท
+        selectedShipping.Price = 50; // ถ้ายอดน้อยกว่า 500 ให้คิดค่าส่ง 50 บาท
     } else if (productTotal >= 500 && selectedShipping.id === 'A00000') {
-        // ถ้ายอดเงินเกิน 500 และผู้ใช้เลือก "ส่งพรุ่งนี้" ให้ปรับค่าจัดส่งเป็นฟรี
+        // ถ้ายอดรวมมากกว่า 500 ให้ส่งฟรี
         selectedShipping.Price = 0;
     }
 
-    const grandTotal = productTotal + selectedShipping.Price;
+    const grandTotal = productTotal + (selectedShipping.Price || 0); // ใช้ 0 ถ้าค่าจัดส่งเป็น undefined หรือ 0
 
-    // อัปเดตราคาใน HTML
+    // อัปเดตใน HTML
     document.getElementById('total-price').textContent = `${productTotal.toFixed(2)} บาท`;
     document.getElementById('shipping-cost').textContent = `${selectedShipping.Price.toFixed(2)} บาท`;
     document.getElementById('grand-total').textContent = `${grandTotal.toFixed(2)} บาท`;
 
-    // แสดงหรือซ่อนปุ่ม 'ถัดไป' ขึ้นอยู่กับยอดรวมสินค้า
+    // แสดง/ซ่อนปุ่มถัดไปตามยอดรวมสินค้า
     if (productTotal > 0) {
-        goToShippingBtn.classList.remove('hidden'); // แสดงปุ่มถ้ายอดรวมมากกว่า 0
+        goToShippingBtn.classList.remove('hidden');
     } else {
-        goToShippingBtn.classList.add('hidden'); // ซ่อนปุ่มถ้ายอดรวมเป็น 0
+        goToShippingBtn.classList.add('hidden');
     }
 }
+
 // เพิ่ม event listener ให้ dropdown เพื่อให้การเลือกการจัดส่งอัปเดตได้ตามที่เลือก
 document.getElementById('shipping-options').addEventListener('change', function () {
     updateTotalPrice(); // เรียก updateTotalPrice ทุกครั้งเมื่อผู้ใช้เปลี่ยน dropdown
