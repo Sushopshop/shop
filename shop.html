@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IIIRN-SHOPPING ระบบร้านค้า</title>
+    <title>S.U.PET</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
@@ -136,7 +136,6 @@
                         <option value="A00000">ส่งพรุ่งนี้ ส่งฟรี(ขั้นต่ำ 500฿ ไม่เกิน5กม.)</option>
                         <option value="A00001">ส่งด่วน(เรียกเก็บทางแชท)</option>
                         <option value="A00002">ส่งขนส่ง(เรียกเก็บทางแชท)</option>
-                        <option value="A00003">ส่งพรุ่งนี้ ส่งฟรี(ขั้นต่ำ 500฿ ไม่เกิน5กม.)</option>
 
                     </select>
                 </div>
@@ -245,7 +244,6 @@
         const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz1xQnuhNN-NxmzSAlIspIxSY39vKMQ3Zw4ZKn455KEobI29Jif7fPqVIMgSI9QxFLh/exec";
         const WEB_MEMBER_APP_URL = 'https://script.google.com/macros/s/AKfycbxquMeArBSqk4vROrAqrwy3gEqN1HLmWp0cHhNVu9hAHmTf8_Vi-7d_mhI9E11_rOk/exec';
         const LIFF_ID = '2006323194-VbyQyzKD'; // Liff ID
-
         // ตัวเลือกการจัดส่ง
         const shippingOptions = [
             {
@@ -360,7 +358,7 @@
 
         // เริ่มการทำงานเมื่อโหลดหน้าเว็บ
         window.onload = async function () {
-            await initializeLiff(); // เรียกใช้งาน LIFF
+           // await initializeLiff(); // เรียกใช้งาน LIFF
             currentTab = 'All'; // ตั้งค่า currentTab เป็น 'All' โดยค่าเริ่มต้น
 
             fetchProducts(); // ดึงข้อมูลสินค้า
@@ -717,15 +715,13 @@
 
 
 
-        // ฟังก์ชันเพื่อตรวจสอบและเพิ่มค่าจัดส่งใหม่เมื่อแสดงตะกร้า
+        // ฟังก์ชันเพิ่มค่าจัดส่งใหม่ลงในตะกร้า
         function addShippingCost() {
             // ลบค่าจัดส่งเดิมก่อน
             resetShippingCost();
 
             // เพิ่มค่าจัดส่งใหม่ลงในตะกร้า
-            if (selectedShipping.Price > 0) {
-                cart.push({ ...selectedShipping, quantity: 1 }); // เพิ่มค่าจัดส่งลงในตะกร้า
-            }
+            cart.push({ ...selectedShipping, quantity: 1 }); // เพิ่มค่าจัดส่งลงในตะกร้า แม้ว่า Price จะเป็น 0
         }
 
         // เมื่อย้อนกลับไปยังหน้าร้านค้า ให้รีเซ็ตค่าจัดส่ง
@@ -803,7 +799,7 @@
             updateCartCount(); // อัปเดตจำนวนสินค้าในตะกร้า
         }
 
-      function updateTotalPrice() {
+        function updateTotalPrice() {
     const productTotal = cart.reduce((total, item) => total + (item.Price * item.quantity), 0); // คำนวณยอดรวมสินค้า
 
     const shippingDropdown = document.getElementById('shipping-options');
@@ -834,6 +830,7 @@
         goToShippingBtn.classList.add('hidden');
     }
 }
+
 
 // เพิ่ม event listener ให้ dropdown เพื่อให้การเลือกการจัดส่งอัปเดตได้ตามที่เลือก
 document.getElementById('shipping-options').addEventListener('change', function () {
