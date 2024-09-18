@@ -989,10 +989,7 @@ function renderOrderDetails(order) {
                 ${itemsHtml}
             </div>
             <div class="border-t mt-4 pt-4">
-                <p class="text-lg font-semibold">ราคารวมสินค้า: ${productTotal.toFixed(2)} บาท</p>
-                <!-- ค่าจัดส่งแยกออก ไม่รวมในราคารวมทั้งหมด -->
-                <p class="text-lg font-semibold">ค่าจัดส่ง: ${order.shippingCost.toFixed(2)} บาท</p>
-                <!-- ราคารวมทั้งหมดไม่บวกค่าจัดส่งซ้ำ -->
+            
                 <p class="text-lg font-semibold">ราคารวมทั้งหมด: ${productTotal.toFixed(2)} บาท</p>
             </div>
         </div>
