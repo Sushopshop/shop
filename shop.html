@@ -137,7 +137,7 @@
                         <span class="text-slate-800 text-xs" style="float:inline-end;">ส่งฟรี</span>
                     </label>
                     <select id="shipping-options" class="bg-white border border-gray-400 rounded-xl p-2">
-                        <option value="A00000">ส่งทั่วไป</option>
+                        <option value="A00000">ส่งทั่วไป(เรียกเก็บทางแชท)</option>
                         <option value="A00001">ส่งด่วน(เรียกเก็บทางแชท)</option>
                         <option value="A00002">ส่งขนส่ง(เรียกเก็บทางแชท)</option>
 
@@ -146,7 +146,7 @@
 
                 <div class="flex justify-between items-center mb-4">
                     <span class="text-md font-semibold">ค่าจัดส่ง</span>
-                    <span id="shipping-cost" class="text-md text-gray-400">5.00 บาท</span>
+                    <span id="shipping-cost" class="text-md text-gray-400">0.00บาท</span>
                 </div>
                 <div class="flex justify-between items-center mb-4">
                     <span class="text-md font-semibold">ราคารวมสินค้า</span>
@@ -880,7 +880,7 @@
 
             // ถ้ายอดรวมสินค้าน้อยกว่า 500 และเป็นการส่งพรุ่งนี้ (A00000)
             if (selectedShipping.id === 'A00000' && productTotal < 500) {
-                selectedShipping.Price = 50; // ถ้ายอดน้อยกว่า 500 ให้คิดค่าส่ง 50 บาท
+                selectedShipping.Price = 0; // ถ้ายอดน้อยกว่า 500 ให้คิดค่าส่ง 0 บาท
             } else if (productTotal >= 500 && selectedShipping.id === 'A00000') {
                 // ถ้ายอดรวมมากกว่า 500 ให้ส่งฟรี
                 selectedShipping.Price = 0;
