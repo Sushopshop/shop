@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IIIRN SHOP</title>
+    <title>S.U.PET SHOP</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
@@ -59,7 +59,7 @@
     </style>
 </head>
 
-<body style="font-family: Noto Sans Thai;" class="bg-gradient-to-b from-amber-100 via-yellow-100 to-lime-300 min-h-screen">
+<body style="font-family: Noto Sans Thai;" class="bg-gradient-to-b from-yellow-50 via-yellow-100 to-lime-100 min-h-screen">
     <!-- ฟังก์ชันการแสดงรายการสินค้า -->
     <div id="product-selection" class="max-w-md mx-auto pt-20">
         <div class=" p-4 rounded-xl">
@@ -73,13 +73,13 @@
                         <div class="pl-4">
                             <p class="text-slate-800 text-xs">ยินดีต้อนรับ</p>
                             <input type="text"
-                                class="input-field bg-green-500 w-32 text-slate-800 text-lg font-bold bg-opacity-0"
+                                class="input-field bg-lime-500 w-32 text-slate-800 text-lg font-bold bg-opacity-0"
                                 id="displayName" name="displayName" readonly>
                         </div>
                     </div>
                     <div class="flex items-center">
                         <button id="go-to-cart"
-                            class="bg-green-500 text-white text-md py-2 px-4 flex items-center gap-2 rounded-xl ml-4">
+                            class="bg-lime-500 text-white text-md py-2 px-4 flex items-center gap-2 rounded-xl ml-4">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20"
                                 color="#ffffff" fill="none">
                                 <path
@@ -99,14 +99,14 @@
 
             <div>
                 <div class="flex">
-                    <div id="tab-nav" class="flex overflow-x-auto space-x-4 py-2">
+                    <div id="tab-nav" class="flex overflow-x-auto space-x-4">
                         <!-- ฟังก์ชันการแสดงหมวดหมู่สินค้า -->
                     </div>
                 </div>
                 <!-- เพิ่มช่องค้นหาสินค้า -->
                 <div class="relative ">
                     <input type="text" id="search-input" placeholder="ค้นหาสินค้า"
-                        class="w-full px-4 py-2 border rounded-xl ">
+                        class="w-full px-4 py-2 shadow rounded-xl ">
                 </div>
                 <div id="product-list" class="text-center">
                 </div>
@@ -161,7 +161,7 @@
 
 
             <button id="go-to-shipping"
-                class="w-full bg-green-500 text-white p-4 rounded-xl font-semibold hidden">ถัดไป</button>
+                class="w-full bg-lime-500 text-white p-4 rounded-xl font-semibold hidden">ถัดไป</button>
         </div>
     </div>
 
@@ -213,7 +213,7 @@
                     </div>
                     <input type="hidden" id="userlineid" name="userlineid">
                 </div>
-                <button type="submit" class="bg-green-500 text-white p-4 w-full rounded-xl mt-4">สั่งซื้อสินค้า</button>
+                <button type="submit" class="bg-lime-500 text-white p-4 w-full rounded-xl mt-4">สั่งซื้อสินค้า</button>
             </form>
         </div>
     </div>
@@ -233,7 +233,7 @@
                 </div>
                 <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                     <button id="confirm-order"
-                        class="w-full inline-flex justify-center rounded-xl border border-transparent  px-4 py-4 bg-green-500 text-base font-medium text-white hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-800 sm:ml-3 sm:w-auto sm:text-sm">ยืนยันการสั่งซื้อ</button>
+                        class="w-full inline-flex justify-center rounded-xl border border-transparent  px-4 py-4 bg-lime-500 text-base font-medium text-white hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-800 sm:ml-3 sm:w-auto sm:text-sm">ยืนยันการสั่งซื้อ</button>
                     <button id="close-modal"
                         class="mt-3 w-full inline-flex justify-center rounded-xl border border-gray-300  px-4 py-2 bg-white text-base font-medium text-black hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm">ยกเลิก</button>
                     <div id="order-status" class="px-4 py-3 sm:px-6 text-center text-sm hidden"></div>
@@ -252,7 +252,7 @@
 
         // เริ่มการทำงานเมื่อโหลดหน้าเว็บ
         window.onload = async function () {
-            await initializeLiff(); // เรียกใช้งาน LIFF
+          //  await initializeLiff(); // เรียกใช้งาน LIFF
             currentTab = 'All'; // ตั้งค่า currentTab เป็น 'All' โดยค่าเริ่มต้น
             fetchProducts(); // ดึงข้อมูลสินค้า
         };
@@ -261,9 +261,9 @@
         const shippingOptions = [
         {
             id: 'A00000',
-            name: 'ส่งพรุ่งนี้(ขั้นต่ำ 500฿ ไม่เกิน 8 กม)',
-            Price: 50,
-            size: 'ส่งพรุ่งนี้',
+            name: 'ส่งทั่วไป(เรียกเก็บทางแชท)',
+            Price: 0,
+            size: 'ส่งทั่วไป',
             quantity: 1,
             'img-product': 'https://via.placeholder.com/40?text=Ship'
         },
@@ -285,9 +285,9 @@
         },
         {
             id: 'A00003',
-            name: 'ส่งฟรี(ขั้นต่ำ 500 ไม่เกิน 8 กม)',
+            name: 'ส่งทั่วไป(เรียกเก็บทางแชท)',
             Price: 0,
-            size: 'ฟรี',
+            size: 'ส่งทั่วไป(เรียกเก็บทางแชท)',
             quantity: 1,
             'img-product': 'https://via.placeholder.com/40?text=Free'
         }
@@ -543,16 +543,16 @@
             categories = ['All', ...categories.filter(category => category !== 'All')];
 
             const tabContainer = document.createElement('div');
-            tabContainer.classList.add('flex', 'space-x-4', 'overflow-x-auto', 'py-2');
+            tabContainer.classList.add('flex', 'space-x-4', 'overflow-x-auto', 'pb-4');
 
             categories.forEach(category => {
                 const tabButton = document.createElement('button');
-                tabButton.classList.add('flex-shrink-0', 'px-1', 'py-1', 'pr-2', 'rounded-xl', 'focus:outline-none', 'bg-white','flex', 'items-center', 'justify-start', 'space-x-2');
+                tabButton.classList.add('flex-shrink-0', 'px-1', 'py-2', 'pr-2', 'rounded-xl', 'focus:outline-none', 'bg-white','flex','shadow', 'items-center', 'justify-start', 'space-x-2');
                 tabButton.setAttribute('data-category', category); // เพิ่ม data-attribute สำหรับหมวดหมู่
 
                 // ทำให้หมวดหมู่ 'All' ถูก active ตั้งแต่เริ่มต้น
                 if (category === currentTab) {
-                    tabButton.classList.add('active', 'bg-green-400', 'text-white');
+                    tabButton.classList.add('active', 'bg-yellow-200', 'text-black');
                 }
 
 
@@ -698,10 +698,10 @@
             }
 
             return `
-          <div class="bg-white p-3 flex flex-col rounded-lg border border-yellow-400   relative">
+          <div class="bg-white p-2 flex flex-col rounded-lg shadow relative">
             <div class="relative">
                 <img src="${product['img-product']}" alt="${product.name}" class="w-full h-40 object-cover rounded-lg">
-                <div class="absolute top-0 right-0 bg-green-500 text-white py-1  px-2 rounded-bl-lg rounded-tr-lg">
+                <div class="absolute top-0 right-0 bg-lime-500 text-white py-1  px-2 rounded-bl-lg rounded-tr-lg">
                     ${product.Price} บาท
                 </div>
             </div>
@@ -710,7 +710,7 @@
             </div>
             <div class="mt-2 flex justify-between items-center">
                 <select class="bg-white p-1 rounded-lg product-size" data-id="${product.id}" style="width: 60%;display:none">  ${sizeOptions} </select>
-                <button class="bg-yellow-200 text-black p-2 rounded-lg  focus:outline-none focus:ring-2 add-to-cart" data-id="${product.id}" style="width: 35%;">ซื้อ</button>
+                <button class="bg-lime-500 text-white p-2 rounded-lg  focus:outline-none focus:ring-2 add-to-cart" data-id="${product.id}" style="width: 100%;">ซื้อ</button>
             </div>
         </div>
     `;
